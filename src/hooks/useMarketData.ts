@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 export interface StockData {
@@ -7,209 +8,252 @@ export interface StockData {
   change: number;
   changePercent: number;
   volume: string;
-  marketCap: string;
   high24h: number;
   low24h: number;
   history: { time: string; price: number }[];
 }
 
-export interface PortfolioData {
+export interface PortfolioHolding {
+  symbol: string;
+  shares: number;
+  averagePrice: number;
+  currentValue: number;
+  totalReturn: number;
+  totalReturnPercent: number;
+}
+
+export interface Portfolio {
   totalValue: number;
   availableCash: number;
   totalInvested: number;
   dailyChange: number;
   dailyChangePercent: number;
-  holdings: Array<{
-    symbol: string;
-    shares: number;
-    avgPrice: number;
-    currentValue: number;
-    totalReturn: number;
-    totalReturnPercent: number;
-  }>;
+  totalReturn: number;
+  totalReturnPercent: number;
+  holdings: PortfolioHolding[];
 }
 
-const INITIAL_STOCKS: StockData[] = [
-  {
-    symbol: 'DANGCEM',
-    name: 'Dangote Cement',
-    price: 425.50,
-    change: 8.5,
-    changePercent: 2.04,
-    volume: '2.5M',
-    marketCap: '₦7.2T',
-    high24h: 430.00,
-    low24h: 415.20,
-    history: []
-  },
-  {
-    symbol: 'MTNN',
-    name: 'MTN Nigeria',
-    price: 195.20,
-    change: -2.3,
-    changePercent: -1.16,
-    volume: '1.8M',
-    marketCap: '₦4.1T',
-    high24h: 198.50,
-    low24h: 192.80,
-    history: []
-  },
-  {
-    symbol: 'BUACEMENT',
-    name: 'BUA Cement',
-    price: 102.75,
-    change: 5.25,
-    changePercent: 5.38,
-    volume: '3.2M',
-    marketCap: '₦1.8T',
-    high24h: 105.00,
-    low24h: 98.50,
-    history: []
-  },
-  {
-    symbol: 'ZENITHBANK',
-    name: 'Zenith Bank',
-    price: 38.95,
-    change: 1.15,
-    changePercent: 3.04,
-    volume: '5.1M',
-    marketCap: '₦1.2T',
-    high24h: 39.50,
-    low24h: 37.80,
-    history: []
-  },
-  {
-    symbol: 'GTCO',
-    name: 'Guaranty Trust Bank',
-    price: 41.20,
-    change: -0.8,
-    changePercent: -1.90,
-    volume: '4.3M',
-    marketCap: '₁.1T',
-    high24h: 42.00,
-    low24h: 40.50,
-    history: []
-  },
-  {
-    symbol: 'AIRTELAFRI',
-    name: 'Airtel Africa',
-    price: 2150.00,
-    change: 45.0,
-    changePercent: 2.14,
-    volume: '890K',
-    marketCap: '₦8.1T',
-    high24h: 2180.00,
-    low24h: 2120.00,
-    history: []
-  }
-];
-
-// Generate historical data for charts
-const generateHistoryData = (basePrice: number) => {
-  const history = [];
-  const now = new Date();
-  
-  for (let i = 23; i >= 0; i--) {
-    const time = new Date(now.getTime() - i * 60 * 60 * 1000);
-    const volatility = 0.02; // 2% volatility
-    const randomChange = (Math.random() - 0.5) * volatility;
-    const price = basePrice * (1 + randomChange);
-    
-    history.push({
-      time: time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-      price: Number(price.toFixed(2))
-    });
-  }
-  
-  return history;
-};
-
 export const useMarketData = () => {
-  const [stocks, setStocks] = useState<StockData[]>(() =>
-    INITIAL_STOCKS.map(stock => ({
-      ...stock,
-      history: generateHistoryData(stock.price)
-    }))
-  );
-
-  const [portfolio, setPortfolio] = useState<PortfolioData>({
-    totalValue: 1250000,
-    availableCash: 950000,
-    totalInvested: 300000,
-    dailyChange: 25000,
-    dailyChangePercent: 2.04,
+  const [stocks, setStocks] = useState<StockData[]>([]);
+  const [portfolio, setPortfolio] = useState<Portfolio>({
+    totalValue: 1000000,
+    availableCash: 750000,
+    totalInvested: 250000,
+    dailyChange: 15750,
+    dailyChangePercent: 1.6,
+    totalReturn: 25000,
+    totalReturnPercent: 2.5,
     holdings: [
       {
-        symbol: 'DANGCEM',
+        symbol: 'DANGOTE',
         shares: 100,
-        avgPrice: 420.00,
-        currentValue: 42550,
-        totalReturn: 550,
-        totalReturnPercent: 1.31
+        averagePrice: 450,
+        currentValue: 47500,
+        totalReturn: 2500,
+        totalReturnPercent: 5.6
       },
       {
-        symbol: 'MTNN',
-        shares: 500,
-        avgPrice: 200.00,
-        currentValue: 97600,
-        totalReturn: -2400,
-        totalReturnPercent: -2.40
+        symbol: 'MTN',
+        shares: 200,
+        averagePrice: 320,
+        currentValue: 68000,
+        totalReturn: 4000,
+        totalReturnPercent: 6.25
       },
       {
-        symbol: 'ZENITHBANK',
-        shares: 2000,
-        avgPrice: 38.00,
-        currentValue: 77900,
-        totalReturn: 1900,
-        totalReturnPercent: 2.50
+        symbol: 'ZENITH',
+        shares: 150,
+        averagePrice: 850,
+        currentValue: 135000,
+        totalReturn: 7500,
+        totalReturnPercent: 5.9
       }
     ]
   });
 
-  // Simulate real-time price updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setStocks(prevStocks => 
-        prevStocks.map(stock => {
-          const volatility = 0.005; // 0.5% volatility per update
-          const randomChange = (Math.random() - 0.5) * volatility;
-          const newPrice = stock.price * (1 + randomChange);
-          const priceChange = newPrice - stock.price;
-          const percentChange = (priceChange / stock.price) * 100;
+  const generateStockHistory = (basePrice: number) => {
+    const history = [];
+    let currentPrice = basePrice;
+    
+    for (let i = 23; i >= 0; i--) {
+      const volatility = (Math.random() - 0.5) * 0.02; // 2% volatility
+      currentPrice = currentPrice * (1 + volatility);
+      history.push({
+        time: `${String(9 + Math.floor(i / 4)).padStart(2, '0')}:${String((i % 4) * 15).padStart(2, '0')}`,
+        price: Number(currentPrice.toFixed(2))
+      });
+    }
+    
+    return history.reverse();
+  };
 
-          // Update history
-          const newHistory = [...stock.history];
-          const now = new Date();
-          newHistory.push({
-            time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+  const updateStockPrices = () => {
+    setStocks(prevStocks => 
+      prevStocks.map(stock => {
+        const volatility = (Math.random() - 0.5) * 0.01; // 1% volatility
+        const newPrice = stock.price * (1 + volatility);
+        const change = newPrice - stock.price;
+        const changePercent = (change / stock.price) * 100;
+        
+        return {
+          ...stock,
+          price: Number(newPrice.toFixed(2)),
+          change: Number(change.toFixed(2)),
+          changePercent: Number(changePercent.toFixed(2)),
+          history: [...stock.history.slice(1), {
+            time: new Date().toLocaleTimeString('en-US', { hour12: false }).slice(0, 5),
             price: Number(newPrice.toFixed(2))
-          });
+          }]
+        };
+      })
+    );
+  };
+
+  const executeTrade = (symbol: string, quantity: number, orderType: 'buy' | 'sell', price: number) => {
+    setPortfolio(prevPortfolio => {
+      const totalCost = price * quantity;
+      let newHoldings = [...prevPortfolio.holdings];
+      let newCash = prevPortfolio.availableCash;
+      let newInvested = prevPortfolio.totalInvested;
+
+      if (orderType === 'buy') {
+        newCash -= totalCost;
+        newInvested += totalCost;
+        
+        const existingHoldingIndex = newHoldings.findIndex(h => h.symbol === symbol);
+        if (existingHoldingIndex >= 0) {
+          const existing = newHoldings[existingHoldingIndex];
+          const totalShares = existing.shares + quantity;
+          const totalValue = (existing.shares * existing.averagePrice) + totalCost;
           
-          // Keep only last 24 data points
-          if (newHistory.length > 24) {
-            newHistory.shift();
-          }
-
-          return {
-            ...stock,
-            price: Number(newPrice.toFixed(2)),
-            change: Number(priceChange.toFixed(2)),
-            changePercent: Number(percentChange.toFixed(2)),
-            history: newHistory
+          newHoldings[existingHoldingIndex] = {
+            ...existing,
+            shares: totalShares,
+            averagePrice: totalValue / totalShares,
+            currentValue: totalShares * price,
+            totalReturn: (totalShares * price) - totalValue,
+            totalReturnPercent: ((totalShares * price) - totalValue) / totalValue * 100
           };
-        })
-      );
-    }, 3000); // Update every 3 seconds
+        } else {
+          newHoldings.push({
+            symbol,
+            shares: quantity,
+            averagePrice: price,
+            currentValue: quantity * price,
+            totalReturn: 0,
+            totalReturnPercent: 0
+          });
+        }
+      } else {
+        newCash += totalCost;
+        newInvested -= totalCost;
+        
+        const existingHoldingIndex = newHoldings.findIndex(h => h.symbol === symbol);
+        if (existingHoldingIndex >= 0) {
+          const existing = newHoldings[existingHoldingIndex];
+          const newShares = existing.shares - quantity;
+          
+          if (newShares <= 0) {
+            newHoldings.splice(existingHoldingIndex, 1);
+          } else {
+            newHoldings[existingHoldingIndex] = {
+              ...existing,
+              shares: newShares,
+              currentValue: newShares * price,
+              totalReturn: (newShares * price) - (newShares * existing.averagePrice),
+              totalReturnPercent: ((newShares * price) - (newShares * existing.averagePrice)) / (newShares * existing.averagePrice) * 100
+            };
+          }
+        }
+      }
 
+      const newTotalValue = newCash + newHoldings.reduce((sum, holding) => sum + holding.currentValue, 0);
+      const newTotalReturn = newTotalValue - 1000000; // Initial value was 1M
+      const newTotalReturnPercent = (newTotalReturn / 1000000) * 100;
+
+      return {
+        ...prevPortfolio,
+        totalValue: newTotalValue,
+        availableCash: newCash,
+        totalInvested: newInvested,
+        totalReturn: newTotalReturn,
+        totalReturnPercent: newTotalReturnPercent,
+        holdings: newHoldings
+      };
+    });
+  };
+
+  useEffect(() => {
+    // Initialize stocks
+    const initialStocks: StockData[] = [
+      {
+        symbol: 'DANGOTE',
+        name: 'Dangote Cement PLC',
+        price: 475.50,
+        change: 8.25,
+        changePercent: 1.77,
+        volume: '2.1M',
+        high24h: 485.00,
+        low24h: 465.25,
+        history: generateStockHistory(475.50)
+      },
+      {
+        symbol: 'MTN',
+        name: 'MTN Nigeria Communications PLC',
+        price: 340.00,
+        change: -5.50,
+        changePercent: -1.59,
+        volume: '1.8M',
+        high24h: 348.75,
+        low24h: 335.50,
+        history: generateStockHistory(340.00)
+      },
+      {
+        symbol: 'ZENITH',
+        name: 'Zenith Bank PLC',
+        price: 900.25,
+        change: 12.75,
+        changePercent: 1.44,
+        volume: '3.2M',
+        high24h: 905.00,
+        low24h: 885.50,
+        history: generateStockHistory(900.25)
+      },
+      {
+        symbol: 'ACCESS',
+        name: 'Access Holdings PLC',
+        price: 18.45,
+        change: 0.35,
+        changePercent: 1.93,
+        volume: '15.7M',
+        high24h: 18.60,
+        low24h: 17.95,
+        history: generateStockHistory(18.45)
+      },
+      {
+        symbol: 'NESTLE',
+        name: 'Nestle Nigeria PLC',
+        price: 1150.00,
+        change: -25.50,
+        changePercent: -2.17,
+        volume: '450K',
+        high24h: 1180.00,
+        low24h: 1145.75,
+        history: generateStockHistory(1150.00)
+      }
+    ];
+
+    setStocks(initialStocks);
+
+    // Update prices every 5 seconds
+    const interval = setInterval(updateStockPrices, 5000);
+    
     return () => clearInterval(interval);
   }, []);
-
-  const getStock = (symbol: string) => stocks.find(s => s.symbol === symbol);
 
   return {
     stocks,
     portfolio,
-    getStock,
-    setPortfolio
+    executeTrade
   };
 };

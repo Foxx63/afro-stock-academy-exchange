@@ -2,6 +2,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, BookOpen, User, BarChart3 } from 'lucide-react';
+import SignInModal from './SignInModal';
 
 const Navigation = () => {
   const location = useLocation();
@@ -73,12 +74,16 @@ const Navigation = () => {
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="hidden md:inline-flex">
-              Sign In
-            </Button>
-            <Button className="gradient-afro-primary text-white hover:opacity-90">
-              Get Started
-            </Button>
+            <SignInModal>
+              <Button variant="ghost" className="hidden md:inline-flex">
+                Sign In
+              </Button>
+            </SignInModal>
+            <SignInModal>
+              <Button className="gradient-afro-primary text-white hover:opacity-90">
+                Get Started
+              </Button>
+            </SignInModal>
           </div>
         </div>
       </div>

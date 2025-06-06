@@ -4,9 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, TrendingDown, DollarSign, BarChart3, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Navigation from '@/components/Navigation';
 import StockChart from '@/components/StockChart';
 import PersonalizedLearning from '@/components/PersonalizedLearning';
+import TradingModal from '@/components/TradingModal';
+import PortfolioAnalytics from '@/components/PortfolioAnalytics';
 import { useMarketData } from '@/hooks/useMarketData';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
@@ -14,10 +17,10 @@ const Dashboard = () => {
   const { stocks, portfolio } = useMarketData();
   const { profile } = useUserProfile();
   const [selectedStock, setSelectedStock] = useState(stocks[0]);
+  const navigate = useNavigate();
 
   const handleTopicSelect = (topicId: string) => {
-    // Navigate to AfroAI with selected topic
-    console.log('Selected topic:', topicId);
+    navigate('/afroai');
   };
 
   return (
@@ -104,7 +107,7 @@ const Dashboard = () => {
                       <div 
                         key={stock.symbol} 
                         className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all hover:bg-muted/50 ${
-                          selectedStock.symbol === stock.symbol ? 'border border-primary bg-primary/5' : 'border border-transparent'
+                          selectedStock?.symbol === stock.symbol ? 'border border-primary bg-primary/5' : 'border border-transparent'
                         }`}
                         onClick={() => setSelectedStock(stock)}
                       >
@@ -120,6 +123,13 @@ const Dashboard = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                  <div className="mt-4">
+                    <TradingModal selectedStock={selectedStock}>
+                      <Button className="w-full gradient-afro-primary text-white hover:opacity-90">
+                        Place Trade Order
+                      </Button>
+                    </TradingModal>
                   </div>
                 </CardContent>
               </Card>
@@ -144,7 +154,7 @@ const Dashboard = () => {
                         <div className="text-right">
                           <div className="font-semibold">₦{holding.currentValue.toLocaleString()}</div>
                           <div className={`text-sm ${holding.totalReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {holding.totalReturn >= 0 ? '+' : ''}₦{Math.abs(holding.totalReturn)} ({holding.totalReturn >= 0 ? '+' : ''}{holding.totalReturnPercent}%)
+                            {holding.totalReturn >= 0 ? '+' : ''}₦{Math.abs(holding.totalReturn)} ({holding.totalReturnPercent}%)
                           </div>
                         </div>
                       </div>
@@ -175,12 +185,16 @@ const Dashboard = () => {
                   </div>
                   
                   <div className="space-y-3">
-                    <Button className="w-full gradient-afro-primary text-white hover:opacity-90">
-                      Make a Trade
-                    </Button>
-                    <Button className="w-full" variant="outline">
-                      Portfolio Analytics
-                    </Button>
+                    <TradingModal selectedStock={selectedStock}>
+                      <Button className="w-full gradient-afro-primary text-white hover:opacity-90">
+                        Make a Trade
+                      </Button>
+                    </TradingModal>
+                    <PortfolioAnalytics>
+                      <Button className="w-full" variant="outline">
+                        Portfolio Analytics
+                      </Button>
+                    </PortfolioAnalytics>
                   </div>
                 </CardContent>
               </Card>
