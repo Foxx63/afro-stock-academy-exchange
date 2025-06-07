@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,8 +15,15 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 const Dashboard = () => {
   const { stocks, portfolio } = useMarketData();
   const { profile } = useUserProfile();
-  const [selectedStock, setSelectedStock] = useState(stocks[0]);
+  const [selectedStock, setSelectedStock] = useState(null);
   const navigate = useNavigate();
+
+  // Set selected stock when stocks are loaded
+  useEffect(() => {
+    if (stocks.length > 0 && !selectedStock) {
+      setSelectedStock(stocks[0]);
+    }
+  }, [stocks, selectedStock]);
 
   const handleTopicSelect = (topicId: string) => {
     navigate('/afroai');
@@ -136,6 +142,7 @@ const Dashboard = () => {
             </div>
           </TabsContent>
 
+          
           <TabsContent value="portfolio" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Portfolio Holdings */}

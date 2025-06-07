@@ -4,11 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StockData } from '@/hooks/useMarketData';
 
 interface StockChartProps {
-  stock: StockData;
+  stock?: StockData;
   height?: number;
 }
 
 const StockChart = ({ stock, height = 300 }: StockChartProps) => {
+  if (!stock) {
+    return (
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle>Loading...</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-center h-64 text-muted-foreground">
+            Loading market data...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const isPositive = stock.change >= 0;
   
   return (
