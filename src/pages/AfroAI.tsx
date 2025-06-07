@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { BookOpen, TrendingUp, User, Clock, CheckCircle, PlayCircle } from 'lucide-react';
 import Navigation from '@/components/Navigation';
+import AskAfroAIModal from '@/components/AskAfroAIModal';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
 const AfroAI = () => {
@@ -283,9 +283,12 @@ const AfroAI = () => {
                       <Button variant="outline" className="w-full">
                         Practice with Simulation
                       </Button>
-                      <Button variant="ghost" className="w-full">
-                        Ask AfroAI a Question
-                      </Button>
+                      
+                      <AskAfroAIModal>
+                        <Button variant="ghost" className="w-full">
+                          Ask AfroAI a Question
+                        </Button>
+                      </AskAfroAIModal>
                     </div>
 
                     {selectedTopicData.nextSteps.length > 0 && (
