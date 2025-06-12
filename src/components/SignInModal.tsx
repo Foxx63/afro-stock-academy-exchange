@@ -1,11 +1,13 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SignInModalProps {
   children: React.ReactNode;
@@ -18,6 +20,8 @@ const SignInModal = ({ children }: SignInModalProps) => {
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -54,17 +58,33 @@ const SignInModal = ({ children }: SignInModalProps) => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const success = await signIn(email, password);
+      if (success) {
+        toast({
+          title: "Welcome Back!",
+          description: "You have been signed in successfully.",
+        });
+        setIsOpen(false);
+        setEmail('');
+        setPassword('');
+        navigate('/dashboard');
+      } else {
+        toast({
+          title: "Sign In Failed",
+          description: "Invalid credentials. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Welcome Back!",
-        description: "You have been signed in successfully.",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
       });
-      setIsOpen(false);
-      setEmail('');
-      setPassword('');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleSignUp = async () => {
@@ -106,18 +126,34 @@ const SignInModal = ({ children }: SignInModalProps) => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const success = await signIn(email, password, name);
+      if (success) {
+        toast({
+          title: "Account Created!",
+          description: "Welcome to AfroExchange. You can now start trading!",
+        });
+        setIsOpen(false);
+        setName('');
+        setEmail('');
+        setPassword('');
+        navigate('/dashboard');
+      } else {
+        toast({
+          title: "Sign Up Failed",
+          description: "Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Account Created!",
-        description: "Welcome to AfroExchange. You can now start trading!",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
       });
-      setIsOpen(false);
-      setName('');
-      setEmail('');
-      setPassword('');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent, action: () => void) => {

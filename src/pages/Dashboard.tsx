@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,10 +12,12 @@ import TradingModal from '@/components/TradingModal';
 import PortfolioAnalytics from '@/components/PortfolioAnalytics';
 import { useMarketData } from '@/hooks/useMarketData';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Dashboard = () => {
   const { stocks, portfolio } = useMarketData();
   const { profile } = useUserProfile();
+  const { user } = useAuth();
   const [selectedStock, setSelectedStock] = useState(null);
   const navigate = useNavigate();
 
@@ -29,6 +32,9 @@ const Dashboard = () => {
     navigate('/afroai');
   };
 
+  // Use authenticated user's name if available, otherwise fall back to profile name
+  const displayName = user?.name || profile.name;
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -36,7 +42,7 @@ const Dashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, {profile.name}!</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome back, {displayName}!</h1>
           <p className="text-muted-foreground">Here's your portfolio overview and personalized learning recommendations.</p>
         </div>
 
