@@ -2,6 +2,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, BookOpen, User, BarChart3 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import SignInModal from './SignInModal';
 
 const Navigation = () => {
@@ -10,7 +11,7 @@ const Navigation = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-border sticky top-0 z-50">
+    <nav className="bg-background border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -74,6 +75,7 @@ const Navigation = () => {
 
           {/* Auth Buttons */}
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <SignInModal>
               <Button variant="ghost" className="hidden md:inline-flex">
                 Sign In
