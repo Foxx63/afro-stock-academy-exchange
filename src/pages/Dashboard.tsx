@@ -32,8 +32,8 @@ const Dashboard = () => {
     navigate('/afroai');
   };
 
-  // Use authenticated user's name if available, otherwise fall back to profile name
-  const displayName = user?.name || profile.name;
+  // Use the authenticated user's name
+  const displayName = user?.name || 'User';
 
   return (
     <div className="min-h-screen bg-background">
