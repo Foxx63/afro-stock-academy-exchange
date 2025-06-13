@@ -15,9 +15,11 @@ interface SignInModalProps {
 
 const SignInModal = ({ children }: SignInModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [signInEmail, setSignInEmail] = useState('');
+  const [signInPassword, setSignInPassword] = useState('');
+  const [signUpName, setSignUpName] = useState('');
+  const [signUpEmail, setSignUpEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { signIn } = useAuth();
@@ -29,7 +31,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
   };
 
   const handleSignIn = async () => {
-    if (!email || !password) {
+    if (!signInEmail || !signInPassword) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields.",
@@ -38,7 +40,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
       return;
     }
 
-    if (!validateEmail(email)) {
+    if (!validateEmail(signInEmail)) {
       toast({
         title: "Invalid Email",
         description: "Please enter a valid email address.",
@@ -47,7 +49,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
       return;
     }
 
-    if (password.length < 6) {
+    if (signInPassword.length < 6) {
       toast({
         title: "Password Too Short",
         description: "Password must be at least 6 characters long.",
@@ -59,15 +61,15 @@ const SignInModal = ({ children }: SignInModalProps) => {
     setIsLoading(true);
     
     try {
-      const success = await signIn(email, password);
+      const success = await signIn(signInEmail, signInPassword);
       if (success) {
         toast({
           title: "Welcome Back!",
           description: "You have been signed in successfully.",
         });
         setIsOpen(false);
-        setEmail('');
-        setPassword('');
+        setSignInEmail('');
+        setSignInPassword('');
         navigate('/dashboard');
       } else {
         toast({
@@ -88,7 +90,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
   };
 
   const handleSignUp = async () => {
-    if (!name || !email || !password) {
+    if (!signUpName || !signUpEmail || !signUpPassword) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields.",
@@ -97,7 +99,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
       return;
     }
 
-    if (!validateEmail(email)) {
+    if (!validateEmail(signUpEmail)) {
       toast({
         title: "Invalid Email",
         description: "Please enter a valid email address.",
@@ -106,7 +108,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
       return;
     }
 
-    if (password.length < 6) {
+    if (signUpPassword.length < 6) {
       toast({
         title: "Password Too Short",
         description: "Password must be at least 6 characters long.",
@@ -115,7 +117,7 @@ const SignInModal = ({ children }: SignInModalProps) => {
       return;
     }
 
-    if (name.length < 2) {
+    if (signUpName.length < 2) {
       toast({
         title: "Invalid Name",
         description: "Please enter your full name.",
@@ -127,16 +129,16 @@ const SignInModal = ({ children }: SignInModalProps) => {
     setIsLoading(true);
     
     try {
-      const success = await signIn(email, password, name);
+      const success = await signIn(signUpEmail, signUpPassword, signUpName);
       if (success) {
         toast({
           title: "Account Created!",
-          description: "Welcome to AfroExchange. You can now start trading!",
+          description: `Welcome to AfroExchange, ${signUpName}! You can now start trading!`,
         });
         setIsOpen(false);
-        setName('');
-        setEmail('');
-        setPassword('');
+        setSignUpName('');
+        setSignUpEmail('');
+        setSignUpPassword('');
         navigate('/dashboard');
       } else {
         toast({
@@ -188,8 +190,8 @@ const SignInModal = ({ children }: SignInModalProps) => {
                 id="signin-email"
                 type="email"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={signInEmail}
+                onChange={(e) => setSignInEmail(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e, handleSignIn)}
                 disabled={isLoading}
               />
@@ -200,8 +202,8 @@ const SignInModal = ({ children }: SignInModalProps) => {
                 id="signin-password"
                 type="password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={signInPassword}
+                onChange={(e) => setSignInPassword(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e, handleSignIn)}
                 disabled={isLoading}
               />
@@ -227,8 +229,8 @@ const SignInModal = ({ children }: SignInModalProps) => {
                 id="signup-name"
                 type="text"
                 placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={signUpName}
+                onChange={(e) => setSignUpName(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e, handleSignUp)}
                 disabled={isLoading}
               />
@@ -239,8 +241,8 @@ const SignInModal = ({ children }: SignInModalProps) => {
                 id="signup-email"
                 type="email"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={signUpEmail}
+                onChange={(e) => setSignUpEmail(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e, handleSignUp)}
                 disabled={isLoading}
               />
@@ -251,8 +253,8 @@ const SignInModal = ({ children }: SignInModalProps) => {
                 id="signup-password"
                 type="password"
                 placeholder="Create a password (min 6 characters)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={signUpPassword}
+                onChange={(e) => setSignUpPassword(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e, handleSignUp)}
                 disabled={isLoading}
               />
